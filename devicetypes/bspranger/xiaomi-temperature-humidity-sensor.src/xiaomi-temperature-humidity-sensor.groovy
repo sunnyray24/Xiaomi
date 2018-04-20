@@ -195,9 +195,13 @@ def parse(String description) {
 		map.translatable = true
 		updateMinMaxTemps(map.value)
 	} else if (map.name == "humidity") {
-		if (humidityOffset) {
-			map.value = (int) map.value + (int) humidityOffset
-		}
+        def temp_humidity1 = parseHumidity(description) 
+        map.value = (int)temp_humidity1 
+        map.descriptionText = "${device.displayName} humidity is ${map.value}%"
+        map.translatable = true
+		// if (humidityOffset) {
+		// 	map.value = (int) map.value + (int) humidityOffset
+		// }
 		updateMinMaxHumidity(map.value)
 	} else if (description?.startsWith('catchall:')) {
 		map = parseCatchAllMessage(description)
@@ -222,6 +226,15 @@ private parseTemperature(String description) {
 	temp = (temp > 100) ? (100 - temp) : temp
     temp = (temperatureScale == "F") ? ((temp * 1.8) + 32) + offset : temp + offset
 	return temp.round(1)
+}
+
+// Calculate humidity
+private parseHumidity(String description) {
+    def humidity_temp = ((description - "humidity: ").trim()) as Float
+    def offset = humidOffset ? humidOffset : 0
+    humidity_temp = (humidity_temp > 100) ? (100 - humidity_temp) : humidity_temp
+    humidity_temp = humidity_temp + offset
+    return humidity_temp.round(1)
 }
 
 // Check catchall for battery voltage data to pass to getBatteryResult for conversion to percentage report
@@ -384,7 +397,9 @@ def updated() {
 private checkIntervalEvent(text) {
     // Device wakes up every 1 hours, this interval allows us to miss one wakeup notification before marking offline
     log.debug "${device.displayName}: Configured health checkInterval when ${text}()"
-    sendEvent(name: "checkInterval", value: 2 * 60 * 60 + 2 * 60, displayed: false, data: [protocol: "zigbee", hubHardwareId: device.hub.hardwareID])
+    //sendEvent(name: "checkInterval", value: 2 * 60 * 60 + 2 * 60, displayed: false, data: [protocol: "zigbee", hubHardwareId: device.hub.hardwareID])
+    sendEvent(name: "checkInterval", value: 2 * 60 * 10 + 2 * 60, displayed: false, data: [protocol: "zigbee", hubHardwareId: device.hub.hardwareID])
+
 }
 
 def formatDate(batteryReset) {
