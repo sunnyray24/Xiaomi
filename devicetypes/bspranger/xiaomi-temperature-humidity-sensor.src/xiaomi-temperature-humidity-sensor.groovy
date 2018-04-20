@@ -196,7 +196,7 @@ def parse(String description) {
 		updateMinMaxTemps(map.value)
 	} else if (map.name == "humidity") {
         def temp_humidity1 = parseHumidity(description) 
-        map.value = temp_humidity1
+        map.value = (int)temp_humidity1 + (int) humidityOffset
         map.descriptionText = "${device.displayName} humidity is ${map.value}%"
         map.translatable = true
 		// if (humidityOffset) {
