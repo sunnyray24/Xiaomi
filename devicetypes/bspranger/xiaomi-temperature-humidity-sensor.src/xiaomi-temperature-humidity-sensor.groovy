@@ -195,8 +195,10 @@ def parse(String description) {
 		map.translatable = true
 		updateMinMaxTemps(map.value)
 	} else if (map.name == "humidity") {
-        def temp_humidity = parseHumidity(String description) 
-        map.value = temp_humidity
+        def temp_humidity1 = parseHumidity(description) 
+        map.value = temp_humidity1
+        map.descriptionText = "${device.displayName} humidity is ${map.value}%"
+        map.translatable = true
 		// if (humidityOffset) {
 		// 	map.value = (int) map.value + (int) humidityOffset
 		// }
@@ -395,7 +397,9 @@ def updated() {
 private checkIntervalEvent(text) {
     // Device wakes up every 1 hours, this interval allows us to miss one wakeup notification before marking offline
     log.debug "${device.displayName}: Configured health checkInterval when ${text}()"
-    sendEvent(name: "checkInterval", value: 2 * 60 * 60 + 2 * 60, displayed: false, data: [protocol: "zigbee", hubHardwareId: device.hub.hardwareID])
+    //sendEvent(name: "checkInterval", value: 2 * 60 * 60 + 2 * 60, displayed: false, data: [protocol: "zigbee", hubHardwareId: device.hub.hardwareID])
+    sendEvent(name: "checkInterval", value: 2 * 60 * 10 + 2 * 60, displayed: false, data: [protocol: "zigbee", hubHardwareId: device.hub.hardwareID])
+
 }
 
 def formatDate(batteryReset) {
