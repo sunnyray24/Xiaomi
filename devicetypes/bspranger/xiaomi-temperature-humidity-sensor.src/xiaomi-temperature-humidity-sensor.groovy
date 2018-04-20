@@ -195,14 +195,10 @@ def parse(String description) {
 		map.translatable = true
 		updateMinMaxTemps(map.value)
 	} else if (map.name == "humidity") {
-        def temp_humidity1 = 24
-        map.value = (int)temp_humidity1 
-        map.descriptionText = "${device.displayName} humidity is ${map.value}%"
-        map.translatable = true
-		// if (humidityOffset) {
-		// 	map.value = (int) map.value + (int) humidityOffset
-		// }
-		//updateMinMaxHumidity(map.value)
+		if (humidityOffset) {
+			map.value = (int) map.value + (int) humidityOffset
+		}
+		updateMinMaxHumidity(map.value)
 	} else if (description?.startsWith('catchall:')) {
 		map = parseCatchAllMessage(description)
 	} else if (description?.startsWith('read attr - raw:')) {
